@@ -1,4 +1,4 @@
-namespace Objects;
+namespace Models;
 
 public class Sign
 {
