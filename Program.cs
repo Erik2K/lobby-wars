@@ -14,10 +14,13 @@ class Program
         database.storeSign(new Sign("Notary", 'N', 2));
         database.storeSign(new Sign("Validator", 'V', 1));
 
-        Console.Write("Enter the contract: ");
-        string contract = Console.ReadLine();
+        Console.Write("Enter the plaintiff contract: ");
+        string plaintiff = Console.ReadLine();
 
-        Console.WriteLine(Tools.contractValidator(contract));
+        Console.Write("Enter the defendant contract: ");
+        string defendant = Console.ReadLine();
+
+        Console.WriteLine(Tools.winnerSelector(plaintiff, defendant) + " Wins");
     }
 }
 
