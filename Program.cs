@@ -1,6 +1,6 @@
 ﻿using Models;
 using Storage;
-using Utils;
+using App;
 namespace LobbyWars;
 
 class Program 
@@ -14,7 +14,8 @@ class Program
         database.storeSign(new Sign("Notary", 'N', 2));
         database.storeSign(new Sign("Validator", 'V', 1));
 
-        Console.WriteLine(Utils.Tools.SignGuesser("NN#", "NVV"));
-    }
+        // Run app
+        Terminal.start();
+    }   
 }
 

@@ -1,4 +1,3 @@
-using Storage;
 using Models;
 using LobbyWars; 
 
@@ -32,11 +31,14 @@ class Tools
     // Returns the winner between two contracts
     public static String winnerSelector(string plaintiff, string defendant)
     {
-        return
-            signsValueCalculator(contractRuleApplier(plaintiff)) > 
-            signsValueCalculator(contractRuleApplier(defendant))
-                ? "plaintiff"
-                : "defendant";
+        int plaintiffPoints = signsValueCalculator(contractRuleApplier(plaintiff));
+        int defendantPoints = signsValueCalculator(contractRuleApplier(defendant));
+        
+        if (plaintiffPoints == defendantPoints) return "Nobody";
+
+        return plaintiffPoints > defendantPoints
+            ? "Plaintiff"
+            : "Defendant";
 
     }
 
