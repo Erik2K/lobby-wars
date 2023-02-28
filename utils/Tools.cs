@@ -12,21 +12,29 @@ class Tools
         if (string.IsNullOrEmpty(contract)) return false;
         
         char[] storedSigns = Program.database.getStoredSigns().Select(sign => sign.Identifier).ToArray();
-        char[] contractSigns = contract.ToCharArray();
+        char[] contractSigns = contract.ToUpper().ToCharArray();
 
-        return contractSigns.Except(storedSigns).ToArray().Length > 0 
-            ? false 
-            : true;
+        return contractSigns.Except(storedSigns).ToArray().Length == 0;
+    }
+
+    public static Boolean emptyContractValidator(string contract) 
+    {
+        if (string.IsNullOrEmpty(contract)) return false;
+        
+        char[] storedSigns = Program.database.getStoredSigns().Select(sign => sign.Identifier).ToArray();
+        char[] contractSigns = contract.ToUpper().ToCharArray();
+        char[] exceptSigns = contractSigns.Except(storedSigns).ToArray();
+
+       
+        return exceptSigns.Contains('#') && exceptSigns.Length == 1;
     }
 
     // Returns the winner between two contracts
     public static String winnerSelector(string plaintiff, string defendant)
     {
         return
-        
             signsValueCalculator(contractRuleApplier(plaintiff)) > 
             signsValueCalculator(contractRuleApplier(defendant))
-
                 ? "plaintiff"
                 : "defendant";
 
@@ -34,7 +42,7 @@ class Tools
 
     public static char[] contractRuleApplier(string contract)
     {
-        char[] signs = contract.ToCharArray();
+        char[] signs = contract.ToUpper().Where(sign => sign != '#').ToArray();
 
         if (signs.Contains('K'))
         {
@@ -55,5 +63,35 @@ class Tools
         }
 
         return counter;
+    }
+
+    public static char SignGuesser(string emptyContract, string fullContract)
+    {
+        char winningSign = '#';
+
+        List<Sign> storedSigns = Program.database.getStoredSigns();
+        int fullContractPoints = signsValueCalculator(contractRuleApplier(fullContract));
+
+        if (
+            fullContractPoints -
+            signsValueCalculator(contractRuleApplier(emptyContract)) > 5
+        ) return '#';
+
+        foreach (var sign in storedSigns.OrderBy(sign => sign.Value))
+        {
+            if (
+                signsValueCalculator(
+                    contractRuleApplier(
+                        emptyContract.Replace('#', sign.Identifier)
+                    )
+                ) > fullContractPoints
+            ) 
+            {
+                winningSign = sign.Identifier;
+                break;
+            }
+        }
+
+        return winningSign;
     }
 }
