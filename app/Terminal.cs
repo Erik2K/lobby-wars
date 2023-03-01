@@ -31,6 +31,7 @@ class Terminal
         } while(!end);
     }
 
+    // Prints app title
     private static void title() 
     {
         Console.Clear();
@@ -40,6 +41,7 @@ class Terminal
         Console.WriteLine("-------------------------\n");
     }
 
+    // Print all Signs available
     private static void SignOptions() 
     {
         List<Sign> storedSigns = Program.database.getStoredSigns();
@@ -101,7 +103,6 @@ class Terminal
         do 
         {
             title();
-
             SignOptions();
 
             do
@@ -130,6 +131,107 @@ class Terminal
     //Runs SignGuesser
     private static void SignGuesser()
     {
-        Console.WriteLine("SignGuesser");
+        string plaintiff;
+        string defendant;
+
+        string emptyContractName = "";
+        string emptyContract = "";
+        string fullContract = "";
+        char result;
+
+
+        Boolean invalidContract = false;
+
+        do
+        {
+            title();
+            SignOptions();
+
+            Console.WriteLine("In this part one of the contracts needs to contain an empty sign ('#')");
+            Console.WriteLine("use it as a normal sign, like: 'N#V'\n");
+
+            do
+            {
+                do
+                {
+                    invalidContract = false;
+
+                    Console.Write("Enter the Plaintiff contract: ");
+                    plaintiff = Console.ReadLine()!;
+
+                    if (Utils.Tools.emptyContractValidator(plaintiff))
+                    {
+                        emptyContractName = "Plaintiff";
+                        emptyContract = plaintiff;
+                    } else fullContract = plaintiff;
+
+                    if (emptyContractName == "" && (invalidContract = !Utils.Tools.contractValidator(plaintiff)))
+                    {
+                        Console.WriteLine("The contract was INVALID!\n");
+                    }
+                } while(invalidContract);
+
+                do
+                {
+                    invalidContract = false;
+
+                    Console.Write("Enter the Defendant contract: ");
+                    defendant = Console.ReadLine()!;
+
+                    if (emptyContractName == "" && Utils.Tools.emptyContractValidator(defendant))
+                    {
+                        emptyContractName = "Defendant";
+                        emptyContract = defendant;
+                    }
+
+                    if (defendant.Contains('#'))
+                    {
+                        if (!Utils.Tools.emptyContractValidator(defendant))
+                            Console.WriteLine("The contract was INVALID!\n");
+                    }
+                    else
+                    {
+                        if (invalidContract = !Utils.Tools.contractValidator(defendant)) Console.WriteLine("The contract was INVALID!\n");
+                        else fullContract = defendant;
+                    }
+
+                } while(invalidContract);
+
+                if (emptyContractName == "")
+                {
+                    Console.WriteLine("No contract has an empty sign!\n");
+                    fullContract = "";
+                    emptyContract = "";
+                    emptyContractName = "";
+                }
+                else
+                {
+                    if (fullContract == "")
+                    {
+                        Console.WriteLine("Only one contract can have an empty sign!\n");
+                        fullContract = "";
+                        emptyContract = "";
+                        emptyContractName = "";
+                    }
+                }
+            } while (emptyContractName == "" || fullContract == "");
+
+            result = Utils.Tools.SignGuesser(emptyContract, fullContract);
+
+            if (result == '#')
+            {
+                Console.WriteLine($"{emptyContractName} can't win");
+            }
+            else
+            {
+                Console.WriteLine($"{emptyContractName} needs ('{result}') sign to win");
+            }
+
+            fullContract = "";
+            emptyContract = "";
+            emptyContractName = "";
+        } while(repeatQuestion());
+
+
     }
 }

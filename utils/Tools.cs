@@ -16,6 +16,7 @@ class Tools
         return contractSigns.Except(storedSigns).ToArray().Length == 0;
     }
 
+    // Cheks the empty contract and return if it's valid
     public static Boolean emptyContractValidator(string contract) 
     {
         if (string.IsNullOrEmpty(contract)) return false;
@@ -42,6 +43,7 @@ class Tools
 
     }
 
+    // Applies the rules to the contract
     public static char[] contractRuleApplier(string contract)
     {
         char[] signs = contract.ToUpper().Where(sign => sign != '#').ToArray();
@@ -54,6 +56,7 @@ class Tools
         return signs;
     }
 
+    // Return value of the contract signs
     public static int signsValueCalculator(char[] signs)
     {
         List<Sign> storedSigns = Program.database.getStoredSigns();
@@ -67,6 +70,7 @@ class Tools
         return counter;
     }
 
+    // Guess necesary sign to win
     public static char SignGuesser(string emptyContract, string fullContract)
     {
         char winningSign = '#';

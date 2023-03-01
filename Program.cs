@@ -16,6 +16,6 @@ class Program
 
         // Run app
         Terminal.start();
-    }   
+    }
 }
 
